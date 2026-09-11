@@ -24,17 +24,26 @@ All functionality is accessible through a simple, menu‑driven CLI.
 **Repository Structure**
 UOL-CSCK542-Group-Project/
 
-│
 ├── db.py                # Database connection module
+
 ├── interface.py         # CLI menu and output formatting
+
 ├── main.py              # Application entry point
+
 ├── queries.py           # SQL query functions
+
 │
+
 ├── schema.sql           # Database schema (tables, constraints)
+
 ├── seed.sql             # Sample data population
+
 │
+
 ├── test_queries.py      # Unit tests (in-memory SQLite)
+
 ├── README.md            # Project documentation
+
 └── .gitignore
 
 **Database Setup**
