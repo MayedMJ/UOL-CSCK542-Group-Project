@@ -3,7 +3,7 @@
 A Python‑based university record management system developed for the CSCK542 Database Connection Assignment.
 The system integrates SQLite as the backend database and provides a command‑line interface (CLI) for generating academic and administrative reports.
 
-Project Overview
+**Project Overview**
 
 This project demonstrates the design, implementation, and testing of a relational database system using SQLite, alongside a Python application that connects to the database and executes predefined SQL queries.
 
@@ -21,7 +21,7 @@ Academic performance queries
 
 All functionality is accessible through a simple, menu‑driven CLI.
 
-Repository Structure
+**Repository Structure**
 UOL-CSCK542-Group-Project/
 │
 ├── db.py                # Database connection module
@@ -36,15 +36,15 @@ UOL-CSCK542-Group-Project/
 ├── README.md            # Project documentation
 └── .gitignore
 
-Database Setup
+**Database Setup**
 
-The project uses SQLite 3.37 or later.
+The project uses **SQLite 3.37 or later.**
 To create the database:
 sqlite3 university.db ".read schema.sql"
 sqlite3 university.db ".read seed.sql"
 This generates university.db containing all tables and seeded data.
 
-Running the Application
+**Running the Application**
 Ensure Python 3 is installed.
 
 From the project directory, run:
@@ -62,21 +62,21 @@ Choose an option:
 Select an option and follow the prompts to generate reports.
 
 
-Running Tests
+**Running Tests**
 The project includes unit tests that use an in‑memory SQLite database (no external files required).
 Run tests with:
 python3 -B -m unittest -v test_queries
 
-Requirements
+**Requirements**
 Python 3
 
 SQLite 3.37+
 
 No external packages required
 
-Academic Context
+**Academic Context**
 
-This project was developed as part of the University of Liverpool MSc Computer Science (Online) module CSCK542 — Database Connection, demonstrating:
+This project was developed as part of the **University of Liverpool MSc Computer Science module CSCK542**, demonstrating:
 Database design
 SQL query development
 Python‑SQLite integration
