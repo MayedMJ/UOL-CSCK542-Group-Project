@@ -32,13 +32,9 @@ UOL-CSCK542-Group-Project/
 
 ├── queries.py           # SQL query functions
 
-│
-
 ├── schema.sql           # Database schema (tables, constraints)
 
 ├── seed.sql             # Sample data population
-
-│
 
 ├── test_queries.py      # Unit tests (in-memory SQLite)
 
