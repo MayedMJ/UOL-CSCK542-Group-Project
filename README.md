@@ -7,22 +7,23 @@ The system integrates SQLite as the backend database and provides a command‑li
 
 This project demonstrates the design, implementation, and testing of a relational database system using SQLite, alongside a Python application that connects to the database and executes predefined SQL queries.
 
-The system supports:
+**The system supports:**
 
-Student registration reporting
+-Student registration reporting
 
-Lecturer‑course relationships
+-Lecturer‑course relationships
 
-Advisor‑student mapping
+-Advisor‑student mapping
 
-Department staff listings
+-Department staff listings
 
-Academic performance queries
+-Academic performance queries
 
 All functionality is accessible through a simple, menu‑driven CLI.
 
 **Repository Structure**
 UOL-CSCK542-Group-Project/
+
 │
 ├── db.py                # Database connection module
 ├── interface.py         # CLI menu and output formatting
@@ -68,17 +69,17 @@ Run tests with:
 python3 -B -m unittest -v test_queries
 
 **Requirements**
-Python 3
+-Python 3
 
-SQLite 3.37+
+-SQLite 3.37+
 
-No external packages required
+-No external packages required
 
 **Academic Context**
 
 This project was developed as part of the **University of Liverpool MSc Computer Science module CSCK542**, demonstrating:
-Database design
-SQL query development
-Python‑SQLite integration
-Software engineering practices
-Unit testing and validation
+-Database design
+-SQL query development
+-Python‑SQLite integration
+-Software engineering practices
+-Unit testing and validation
