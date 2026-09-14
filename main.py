@@ -1,53 +1,35 @@
-from db import get_connection
-from interface import menu, print_rows
-from queries import (
-    get_course_students,
-    get_final_year_students,
-    get_students_without_registrations,
-    get_student_advisor,
-    get_department_staff
-)
+import sqlite3
+from interface import show_menu
+from queries import run_query
 
 def main():
-    conn = get_connection()
+    conn = None
+    try:
+        # Attempt to connect to the database
+        conn = sqlite3.connect("university.db")
+        cursor = conn.cursor()
 
-    while True:
-        choice = menu()
+        while True:
+            choice = show_menu()
+            if choice == "0":
+                print("Exiting program...")
+                break
 
-        if choice == "1":
-            course = input("Enter course code (e.g., CS301): ")
-            lecturer = int(input("Enter lecturer ID: "))
-            rows = get_course_students(conn, course, lecturer)
-            print_rows(rows)
+            try:
+                run_query(cursor, choice)
+            except sqlite3.OperationalError as e:
+                print("Database error:", e)
+                print("Please ensure the database is set up correctly using schema.sql and seed.sql.")
+            except Exception as e:
+                print("Unexpected error:", e)
 
-        elif choice == "2":
-            rows = get_final_year_students(conn)
-            print_rows(rows)
+    except sqlite3.Error as e:
+        print("Failed to connect to the database:", e)
 
-        elif choice == "3":
-            year = input("Enter academic year (e.g., 2026/27): ")
-            semester = input("Enter semester (e.g., 1): ")
-            rows = get_students_without_registrations(conn, year, semester)
-            print_rows(rows)
-
-        elif choice == "4":
-            student_id = int(input("Enter student ID: "))
-            rows = get_student_advisor(conn, student_id)
-            print_rows(rows)
-
-        elif choice == "5":
-            dept_id = int(input("Enter department ID: "))
-            rows = get_department_staff(conn, dept_id)
-            print_rows(rows)
-
-        elif choice == "0":
-            print("Goodbye!")
-            break
-
-        else:
-            print("Invalid option. Try again.\n")
-
-    conn.close()
+    finally:
+        if conn:
+            conn.close()
+            print("Database connection closed.")
 
 if __name__ == "__main__":
     main()
