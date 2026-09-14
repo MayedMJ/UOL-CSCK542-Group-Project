@@ -20,18 +20,28 @@ def get_academic_period():
 
     return year, semester
 
+def get_valid_id(prompt):
+    while True:
+        value = input(prompt).strip()
+        if not value:
+            print("Error: ID cannot be blank. Please enter a numeric value.")
+            continue
+        try:
+            return int(value)
+        except ValueError:
+            print("Error: Invalid input. Please enter a numeric value.")
+
 def run_query(cursor, choice):
     if choice == "1":
-        lecturer = input("Enter lecturer name: ").strip()
-        course = input("Enter course name: ").strip()
+        lecturer_id = get_valid_id("Enter lecturer ID: ")
+        course_id = get_valid_id("Enter course ID: ")
         cursor.execute("""
             SELECT s.name
             FROM Student s
             JOIN Registration r ON s.studentID = r.studentID
-            JOIN Course c ON r.courseID = c.courseID
-            JOIN Lecturer l ON c.lecturerID = l.lecturerID
-            WHERE l.name = ? AND c.name = ?
-        """, (lecturer, course))
+            JOIN CourseOffering co ON r.offeringID = co.offeringID
+            WHERE co.courseID = ? AND co.lecturerID = ?
+        """, (course_id, lecturer_id))
         results = cursor.fetchall()
         print("Results:", results)
 
@@ -62,22 +72,22 @@ def run_query(cursor, choice):
             print("Unregistered students:", results)
 
     elif choice == "4":
-        student = input("Enter student name: ").strip()
+        student_id = get_valid_id("Enter student ID: ")
         cursor.execute("""
             SELECT a.name
             FROM Advisor a
             JOIN Student s ON a.advisorID = s.advisorID
-            WHERE s.name = ?
-        """, (student,))
+            WHERE s.studentID = ?
+        """, (student_id,))
         results = cursor.fetchall()
         print("Advisor details:", results)
 
     elif choice == "5":
-        dept = input("Enter department name: ").strip()
+        dept_id = get_valid_id("Enter department ID: ")
         cursor.execute("""
             SELECT name
             FROM Staff
-            WHERE department = ?
-        """, (dept,))
+            WHERE departmentID = ?
+        """, (dept_id,))
         results = cursor.fetchall()
         print("Department staff:", results)
