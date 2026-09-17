@@ -2,13 +2,14 @@ import sqlite3
 
 def show_menu():
     print("\n=== University Database Reports ===")
-    print("1. Students in a course taught by a lecturer")
-    print("2. Final-year students with average > 70%")
-    print("3. Students without registrations")
-    print("4. Student advisor details")
-    print("5. Department staff")
+    print("1. List students taught by a lecturer for a course")
+    print("2. List final-year students with average mark > 70")
+    print("3. List students not registered in a given year/semester")
+    print("4. Show a student's advisor")
+    print("5. List staff in a department")
     print("0. Exit")
-    return input("Choose an option: ")
+    return input("Enter your choice: ")
+
 
 def get_academic_period():
     year = input("Enter academic year (e.g., 2026/27): ").strip()
