@@ -79,3 +79,19 @@ def run_query(cursor, choice, **kwargs):
         return query_students_by_lecturer(
             cursor,
             kwargs.get("lecturer_id"),
+            kwargs.get("course_id"),
+        )
+    elif choice == "2":
+        return query_final_year_students(cursor)
+    elif choice == "3":
+        return query_unregistered_students(
+            cursor,
+            kwargs.get("year"),
+            kwargs.get("semester"),
+        )
+    elif choice == "4":
+        return query_student_advisor(cursor, kwargs.get("student_id"))
+    elif choice == "5":
+        return query_department_staff(cursor, kwargs.get("dept_id"))
+    else:
+        return []
