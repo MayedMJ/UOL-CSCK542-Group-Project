@@ -1,11 +1,14 @@
 import sqlite3
+
+from db import get_connection
 from interface import show_menu
 from queries import run_query
+
 
 def main():
     conn = None
     try:
-        conn = sqlite3.connect("university.db")
+        conn = get_connection()
         cursor = conn.cursor()
 
         while True:
