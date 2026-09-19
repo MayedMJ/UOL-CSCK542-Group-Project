@@ -1,6 +1,12 @@
-import sqlite3
+"""Menu display and input helpers for the university reports CLI."""
+
 
 def show_menu():
+    """Display the reports menu and read the user's selection.
+
+    Returns:
+        str: The response as entered. The caller trims and validates it.
+    """
     print("\n=== University Database Reports ===")
     print("1. List students taught by a lecturer for a course")
     print("2. List final-year students with average mark > 70")
@@ -12,6 +18,15 @@ def show_menu():
 
 
 def get_academic_period():
+    """Read an academic year and semester for the registration report.
+
+    Trim surrounding whitespace from both responses. If either is blank,
+    print an error so the caller can return to the menu.
+
+    Returns:
+        tuple: The year and semester as strings, or (None, None) when
+            either response is blank.
+    """
     year = input("Enter academic year (e.g., 2026/27): ").strip()
     semester = input("Enter semester (e.g., 1): ").strip()
 
@@ -21,74 +36,26 @@ def get_academic_period():
 
     return year, semester
 
+
 def get_valid_id(prompt):
+    """Prompt until the user enters an integer ID.
+
+    Strip surrounding whitespace from the response. Explain blank or
+    non-integer input before prompting again.
+
+    Args:
+        prompt (str): Message displayed each time an ID is requested.
+
+    Returns:
+        int: The ID entered by the user.
+    """
     while True:
         value = input(prompt).strip()
         if not value:
             print("Error: ID cannot be blank. Please enter a numeric value.")
             continue
+
         try:
             return int(value)
         except ValueError:
             print("Error: Invalid input. Please enter a numeric value.")
-
-def run_query(cursor, choice):
-    if choice == "1":
-        lecturer_id = get_valid_id("Enter lecturer ID: ")
-        course_id = get_valid_id("Enter course ID: ")
-        cursor.execute("""
-            SELECT s.name
-            FROM Student s
-            JOIN Registration r ON s.studentID = r.studentID
-            JOIN CourseOffering co ON r.offeringID = co.offeringID
-            WHERE co.courseID = ? AND co.lecturerID = ?
-        """, (course_id, lecturer_id))
-        results = cursor.fetchall()
-        print("Results:", results)
-
-    elif choice == "2":
-        cursor.execute("""
-            SELECT name
-            FROM Student
-            WHERE year = 'Final' AND averageMark > 70
-        """)
-        results = cursor.fetchall()
-        print("Results:", results)
-
-    elif choice == "3":
-        year, semester = get_academic_period()
-        if year and semester:
-            cursor.execute("""
-                SELECT s.name
-                FROM Student s
-                WHERE NOT EXISTS (
-                    SELECT 1
-                    FROM Registration r
-                    WHERE r.studentID = s.studentID
-                    AND r.academicYear = ?
-                    AND r.semester = ?
-                )
-            """, (year, semester))
-            results = cursor.fetchall()
-            print("Unregistered students:", results)
-
-    elif choice == "4":
-        student_id = get_valid_id("Enter student ID: ")
-        cursor.execute("""
-            SELECT a.name
-            FROM Advisor a
-            JOIN Student s ON a.advisorID = s.advisorID
-            WHERE s.studentID = ?
-        """, (student_id,))
-        results = cursor.fetchall()
-        print("Advisor details:", results)
-
-    elif choice == "5":
-        dept_id = get_valid_id("Enter department ID: ")
-        cursor.execute("""
-            SELECT name
-            FROM Staff
-            WHERE departmentID = ?
-        """, (dept_id,))
-        results = cursor.fetchall()
-        print("Department staff:", results)
