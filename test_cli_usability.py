@@ -255,6 +255,15 @@ class CliUsabilityTests(unittest.TestCase):
                     ],
                 )
 
+    def test_empty_report_is_explained(self) -> None:
+        """Explain a successful lookup with no matching student."""
+        output = self._run_application(["4", "999"])
+
+        self.assertIn("No results found.", output)
+        self.assertFalse(
+            any(line.startswith("(") for line in output.splitlines())
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

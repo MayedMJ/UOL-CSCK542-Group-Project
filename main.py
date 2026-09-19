@@ -57,6 +57,8 @@ def main(db_path=DEFAULT_DB_PATH) -> None:
             try:
                 results = run_query(cursor, choice, **params)
                 print("\nResults:")
+                if not results:
+                    print("No results found.")
                 for row in results:
                     print(row)
                 print()
