@@ -156,6 +156,105 @@ class CliUsabilityTests(unittest.TestCase):
             ],
         )
 
+    def test_blank_year_is_rejected(self) -> None:
+        """Reject empty or whitespace-only years before reporting."""
+        for year in ("", " \t "):
+            with self.subTest(year=year):
+                output = self._run_application(["3", year, "1"])
+
+                self.assertNotIn("\nResults:\n", output)
+                self.assertIn("cannot be blank", output)
+                self.assertIn("Academic year", output)
+
+    def test_blank_semester_is_rejected(self) -> None:
+        """Reject empty or whitespace-only semesters before querying."""
+        for semester in ("", " \t "):
+            with self.subTest(semester=semester):
+                output = self._run_application(["3", "2026/27", semester])
+
+                self.assertNotIn("\nResults:\n", output)
+                self.assertIn("cannot be blank", output)
+                self.assertIn("semester", output)
+
+    def test_blank_academic_period_is_rejected(self) -> None:
+        """Reject both blank fields without listing any students."""
+        output = self._run_application(["3", "", ""])
+
+        self.assertNotIn("\nResults:\n", output)
+        self.assertIn("cannot be blank", output)
+
+    def test_academic_period_whitespace_is_trimmed(self) -> None:
+        """Trim whitespace around a valid academic year and semester."""
+        output = self._run_application(["3", " 2026/27 ", " 1 "])
+
+        self._assert_report(
+            output,
+            [
+                (6, "Farah Ali"),
+                (8, "Hannah Reed"),
+                (9, "Isaac Patel"),
+                (10, "Jack Morgan"),
+            ],
+        )
+
+    def test_invalid_menu_choice_is_rejected(self) -> None:
+        """Explain invalid menu choices without producing a report."""
+        for choice in ("", " \t ", "x", "6"):
+            with self.subTest(choice=choice):
+                output = self._run_application([choice])
+
+                self.assertNotIn("\nResults:\n", output)
+                self.assertRegex(output.lower(), r"invalid[^\n]*choice")
+
+    def test_invalid_lecturer_id_can_be_corrected(self) -> None:
+        """Retry invalid lecturer IDs before reporting on CS301."""
+        for lecturer_id in ("", " \t ", "abc", "1.5"):
+            with self.subTest(lecturer_id=lecturer_id):
+                output = self._run_application(
+                    ["1", lecturer_id, "1", "CS301"]
+                )
+
+                self.assertIn("numeric", output)
+                self._assert_report(
+                    output,
+                    [
+                        (1, "Amina Yusuf"),
+                        (2, "Ben Carter"),
+                        (3, "Chloe Martin"),
+                        (4, "Daniel Okafor"),
+                    ],
+                )
+
+    def test_invalid_student_id_can_be_corrected(self) -> None:
+        """Retry invalid IDs before showing student 2's advisor."""
+        for student_id in ("", " \t ", "abc", "1.5"):
+            with self.subTest(student_id=student_id):
+                output = self._run_application(["4", student_id, "2"])
+
+                self.assertIn("numeric", output)
+                self._assert_report(
+                    output,
+                    [
+                        (1, "Maya Patel",
+                         "maya.patel@example.test", "02079460001"),
+                    ],
+                )
+
+    def test_invalid_department_id_can_be_corrected(self) -> None:
+        """Retry invalid department IDs, then show department 2 once."""
+        for department_id in ("", " \t ", "abc", "1.5"):
+            with self.subTest(department_id=department_id):
+                output = self._run_application(["5", department_id, "2"])
+
+                self.assertIn("numeric", output)
+                self._assert_report(
+                    output,
+                    [
+                        (3, "Sofia Grant", "Academic"),
+                        (3, "Liam Brooks", "Non-academic"),
+                    ],
+                )
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,7 @@ import argparse
 import sqlite3
 
 from db import DEFAULT_DB_PATH, get_connection
-from interface import show_menu
+from interface import get_academic_period, get_valid_id, show_menu
 from queries import run_query
 
 
@@ -20,30 +20,39 @@ def main(db_path=DEFAULT_DB_PATH) -> None:
         cursor = conn.cursor()
 
         while True:
-            choice = show_menu()
+            choice = show_menu().strip()
 
             if choice == "0":
                 print("Exiting program...")
                 break
 
+            if choice not in ("1", "2", "3", "4", "5"):
+                print("Invalid choice. Please select an option from 0 to 5.")
+                continue
+
             params = {}
 
             if choice == "1":
-                params["lecturer_id"] = input("Enter lecturer ID: ")
-                params["course_id"] = input("Enter course ID: ")
+                params["lecturer_id"] = get_valid_id("Enter lecturer ID: ")
+                params["course_id"] = input(
+                    "Enter course code (e.g., CS301): "
+                ).strip()
 
             elif choice == "2":
                 pass  # no extra inputs
 
             elif choice == "3":
-                params["year"] = input("Enter academic year (e.g., 2026/27): ")
-                params["semester"] = input("Enter semester (e.g., 1): ")
+                year, semester = get_academic_period()
+                if year is None or semester is None:
+                    continue
+                params["year"] = year
+                params["semester"] = semester
 
             elif choice == "4":
-                params["student_id"] = input("Enter student ID: ")
+                params["student_id"] = get_valid_id("Enter student ID: ")
 
             elif choice == "5":
-                params["dept_id"] = input("Enter department ID: ")
+                params["dept_id"] = get_valid_id("Enter department ID: ")
 
             try:
                 results = run_query(cursor, choice, **params)
