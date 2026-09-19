@@ -42,16 +42,16 @@ def get_course_students(connection, course_code, lecturer_id):
 
 
 def get_final_year_students(connection):
-    """Return final-year students with an average grade strictly above 70%.
+    """Return final-year students whose average grade is above 70%.
 
     Args:
         connection: Open SQLite connection, as described above.
 
     Returns:
-        Rows containing (student_id, name, average_grade), ordered by ID.
-        Final year means study_year equals programme duration. The average
-        is unweighted across recorded final grades; NULL grades are
-        excluded. Students with no recorded grades do not qualify.
+        Rows of (student_id, name, average_grade), ordered by ID.
+        Final year means study_year equals programme duration.
+        The average is unweighted across recorded final grades; NULL
+        grades are excluded. Students without grades do not qualify.
     """
     sql = """
         SELECT s.student_id, s.name, AVG(e.final_grade) AS average_grade
@@ -71,7 +71,7 @@ def get_final_year_students(connection):
 
 
 def get_students_without_registrations(connection, academic_year, semester):
-    """Return students without enrolments in the specified academic period.
+    """Return students without enrolments in the given academic period.
 
     Args:
         connection: Open SQLite connection, as described above.
@@ -112,7 +112,8 @@ def get_student_advisor(connection, student_id):
 
     Returns:
         One row containing (lecturer_id, name, email, phone), or no rows
-        if the student does not exist. An unrecorded phone number is None.
+        if the student does not exist. An unrecorded phone number is
+        returned as None.
     """
     sql = """
         SELECT l.lecturer_id, l.name, l.email, l.phone
@@ -137,7 +138,8 @@ def get_department_staff(connection, department_id):
     Returns:
         Rows containing (staff_id, name, staff_category), ordered by
         category and ID. Categories are "Academic" and "Non-academic".
-        IDs belong to their category; different categories can share an ID.
+        IDs belong to their category; different categories can share
+        an ID.
     """
     sql = """
         SELECT lecturer_id AS staff_id, name, 'Academic' AS staff_category
@@ -163,11 +165,12 @@ def run_query(cursor, choice, **kwargs):
     """Run the report selected from the application menu.
 
     Args:
-        cursor: Open SQLite cursor whose connection is used for the query.
+        cursor: Open SQLite cursor providing the query's connection.
         choice: Menu option as text, from "1" to "5".
         **kwargs: Filters entered through the CLI. Option "1" uses
             lecturer_id and course_id; "3" uses year and semester;
-            "4" uses student_id; "5" uses dept_id. Option "2" needs none.
+            "4" uses student_id; "5" uses dept_id. Option "2" needs
+            no filters.
             The course_id value is a course code, such as "CS301".
 
     Returns:

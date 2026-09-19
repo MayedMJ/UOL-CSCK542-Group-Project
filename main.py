@@ -65,7 +65,10 @@ def main(db_path=DEFAULT_DB_PATH) -> None:
 
             except sqlite3.OperationalError as e:
                 print("Database error:", e)
-                print("Please ensure the database is set up correctly using schema.sql and seed.sql.")
+                print(
+                    "Please ensure the database is set up correctly "
+                    "using schema.sql and seed.sql."
+                )
             except Exception as e:
                 print("Unexpected error:", e)
 

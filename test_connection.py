@@ -1,8 +1,8 @@
 """Check foreign-key enforcement on the connection used by main.
 
 Each test loads schema.sql and seed.sql into a real in-memory database.
-Foreign keys are disabled after setup so the application must enable them.
-The database is closed after each test, including when an assertion fails.
+Setup then disables foreign keys so the application must enable them.
+Each test closes its database, including when an assertion fails.
 """
 
 from contextlib import redirect_stdout
@@ -22,7 +22,7 @@ class ApplicationConnectionTests(unittest.TestCase):
     """Check connection settings and enforcement during a report."""
 
     def setUp(self) -> None:
-        """Load a fresh database with foreign keys initially disabled."""
+        """Load the seed data, then disable foreign-key enforcement."""
         self.connection = sqlite3.connect(":memory:")
         self.addCleanup(self.connection.close)
         for filename in ("schema.sql", "seed.sql"):
@@ -35,9 +35,9 @@ class ApplicationConnectionTests(unittest.TestCase):
     def _run_application(self, query) -> None:
         """Run option 2 with the supplied query callback, then exit.
 
-        The callback receives the application's cursor, choice and filters.
-        Connections are redirected to this test's in-memory database.
-        main remains responsible for configuring and closing the connection.
+        The callback receives the application's cursor, menu choice
+        and filters. Connections use this test's in-memory database.
+        main configures and closes the connection.
         """
         output = StringIO()
         with (
@@ -55,8 +55,9 @@ class ApplicationConnectionTests(unittest.TestCase):
     def test_application_enables_foreign_keys(self) -> None:
         """Check that foreign keys are enabled when a report starts.
 
-        Record the setting on the cursor passed by main, then assert it
-        after main returns so its error handler cannot swallow a failure.
+        Record the setting on the cursor passed by main. Assert it
+        after main returns so its error handler cannot catch a failed
+        assertion.
         """
         settings = []
 
@@ -74,8 +75,8 @@ class ApplicationConnectionTests(unittest.TestCase):
         """Reject an enrolment whose student does not exist.
 
         Delivery 1 exists in the seed data, but student 999 does not.
-        Attempt the insert using the application's cursor and roll it back
-        before the report finishes, whether the insert succeeds or fails.
+        Attempt the insert using the application's cursor. Roll it
+        back before the report finishes, whether it succeeds or fails.
         """
         errors = []
 

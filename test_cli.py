@@ -23,7 +23,7 @@ class CliReportTests(unittest.TestCase):
     def _assert_report(
         self, answers: list[str], expected_rows: list[tuple]
     ) -> None:
-        """Enter the answers in order, then exit and compare report rows."""
+        """Enter the answers, exit and compare the report rows."""
         with TemporaryDirectory() as working_dir:
             database_path = Path(working_dir) / "university.db"
             with closing(sqlite3.connect(database_path)) as connection:
@@ -94,7 +94,7 @@ class CliReportTests(unittest.TestCase):
         )
 
     def test_student_advisor_report(self) -> None:
-        """Student 1's result includes their advisor's email and phone."""
+        """Include the advisor's email and phone for student 1."""
         self._assert_report(
             ["4", "1"],
             [(1, "Maya Patel", "maya.patel@example.test", "02079460001")],
