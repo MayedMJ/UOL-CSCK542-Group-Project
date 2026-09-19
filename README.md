@@ -1,79 +1,77 @@
-# UOL-CSCK542-Group-Project  
-A Python‑based university record management system developed for the CSCK542 Web Technology and Databases module.  
-The system integrates SQLite as the backend database and provides a command‑line interface (CLI) for generating academic and administrative reports.
+# University Database Reports
 
----
+A Python command-line application for querying student enrolments, grades,
+advisors and staff in a SQLite database.
 
-## Project Overview
-This project demonstrates the design, implementation, and testing of a relational database system using SQLite, alongside a Python application that connects to the database and executes predefined SQL queries.
+## Requirements
 
-The system supports:
-- Student registration reporting  
-- Lecturer–course relationships  
-- Advisor–student mapping  
-- Department staff listings  
-- Academic performance queries  
+- Python 3.9 or later, with SQLite 3.37 or later.
+- The `sqlite3` command-line tool, version 3.37 or later, for database setup.
 
-All functionality is accessible through a simple, menu‑driven CLI.
+The application and tests use only the Python standard library.
 
----
+Check the SQLite versions used by Python and the command-line tool:
 
-## Repository Structure
+```sh
+python3 -c "import sqlite3; print(sqlite3.sqlite_version)"
+sqlite3 --version
+```
 
-├── db.py              # Database connection module
-├── interface.py       # CLI menu
-├── main.py            # Application entry point
-├── queries.py         # SQL query functions
-├── schema.sql         # Database schema (tables, constraints)
-├── seed.sql           # Sample data population
-├── test_queries.py    # Unit tests (in-memory SQLite)
-└── README.md          # Project documentation
+## Quick start
 
+From the repository root, create a new database with the sample data and start
+the application:
 
----
+```sh
+sqlite3 -bail university.db ".read schema.sql"
+sqlite3 -bail university.db ".read seed.sql"
+python3 main.py
+```
 
-## Database Setup
-The project uses **SQLite 3.37+**.
+Run the schema and seed commands once for each new database. They do not reset
+an existing database.
 
-**To create and populate the database:**
+## Usage
 
-```bash
-sqlite3 university.db ".read schema.sql"
-sqlite3 university.db ".read seed.sql"
+Choose a report from the menu. The examples below use the supplied sample data.
 
-**Running the Application**
+| Option | Report | Example input |
+| --- | --- | --- |
+| 1 | Students taught by a lecturer for a course | Lecturer `1`, course `CS301` |
+| 2 | Final-year students with an average grade above 70% | None |
+| 3 | Students without enrolments in an academic period | Year `2026/27`, semester `1` |
+| 4 | A student's advisor and contact details | Student `1` |
+| 5 | Academic and non-academic staff in a department | Department `1` |
 
-Ensure Python 3 is installed.
+Enter `0` to exit.
 
-From the project directory, run: python main.py
+By default, the application opens `university.db` beside `main.py`, regardless
+of the terminal's working directory. Pass an explicit database path with
+`--db`:
 
-You will see the CLI menu:
-=== University Database Reports ===
-1. Students in a course taught by a lecturer
-2. Final-year students with average > 70%
-3. Students without registrations
-4. Student advisor details
-5. Department staff
-0. Exit
+```sh
+python3 main.py --db university.db
+```
 
-Running Tests
-The project includes unit tests that use an in‑memory SQLite database (no external files required).
+The selected database must already contain the schema. Relative paths supplied
+through `--db` resolve from the terminal's working directory.
 
-Run tests with: python3 -B -m unittest -v test_queries
+Show the command-line options:
 
-Academic Context
-This project was developed as part of the University of Liverpool MSc Computer Science module CSCK542, demonstrating:
+```sh
+python3 main.py --help
+```
 
-Relational database design
+## Tests
 
-SQL query development
+Run the full suite from the repository root:
 
-Python–SQLite integration
+```sh
+python3 -B -m unittest discover -v
+```
 
-Software engineering practices
+The suite covers query results, application startup, menu integration, database
+selection, input validation, empty reports and foreign-key enforcement.
 
-Unit testing and validation
-
-
-University of Liverpool — MSc Computer Science
-
+Tests use isolated in-memory and temporary databases. The repository’s
+`university.db` is not accessed.
