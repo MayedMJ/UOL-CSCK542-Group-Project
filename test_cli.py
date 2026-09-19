@@ -7,6 +7,7 @@ SQLite 3.37 or later is required.
 from ast import literal_eval
 from contextlib import closing
 from pathlib import Path
+import shutil
 import sqlite3
 import subprocess
 import sys
@@ -25,6 +26,10 @@ class CliReportTests(unittest.TestCase):
     ) -> None:
         """Enter the answers in order, then exit and compare report rows."""
         with TemporaryDirectory() as working_dir:
+            for filename in ("main.py", "db.py", "interface.py", "queries.py"):
+                shutil.copyfile(
+                    PROJECT_DIR / filename, Path(working_dir) / filename
+                )
             database_path = Path(working_dir) / "university.db"
             with closing(sqlite3.connect(database_path)) as connection:
                 connection.execute("PRAGMA foreign_keys = ON")
@@ -35,7 +40,7 @@ class CliReportTests(unittest.TestCase):
                 connection.commit()
 
             result = subprocess.run(
-                [sys.executable, "-B", str(PROJECT_DIR / "main.py")],
+                [sys.executable, "-B", str(Path(working_dir) / "main.py")],
                 input="\n".join(answers) + "\n0\n",
                 capture_output=True,
                 text=True,
