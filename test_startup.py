@@ -16,8 +16,15 @@ class StartupTests(unittest.TestCase):
     def test_application_starts_and_exits(self) -> None:
         """Display the menu and close the application with option 0."""
         with TemporaryDirectory() as working_dir:
+            database_path = Path(working_dir) / "university.db"
             result = subprocess.run(
-                [sys.executable, "-B", str(PROJECT_DIR / "main.py")],
+                [
+                    sys.executable,
+                    "-B",
+                    str(PROJECT_DIR / "main.py"),
+                    "--db",
+                    str(database_path),
+                ],
                 input="0\n",
                 capture_output=True,
                 text=True,

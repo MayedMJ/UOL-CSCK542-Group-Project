@@ -1,14 +1,22 @@
+"""Run the university database reports from a command-line menu."""
+
+import argparse
 import sqlite3
 
-from db import get_connection
+from db import DEFAULT_DB_PATH, get_connection
 from interface import show_menu
 from queries import run_query
 
 
-def main():
+def main(db_path=DEFAULT_DB_PATH) -> None:
+    """Run the report menu using the selected database.
+
+    With no path supplied, use university.db beside this application.
+    Explicit relative paths resolve from the current working directory.
+    """
     conn = None
     try:
-        conn = get_connection()
+        conn = get_connection(db_path)
         cursor = conn.cursor()
 
         while True:
@@ -58,5 +66,14 @@ def main():
             conn.close()
             print("Database connection closed.")
 
+
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="University database reports")
+    parser.add_argument(
+        "--db",
+        metavar="PATH",
+        default=DEFAULT_DB_PATH,
+        help="database file (default: university.db beside this application)",
+    )
+    args = parser.parse_args()
+    main(args.db)

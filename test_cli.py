@@ -35,7 +35,13 @@ class CliReportTests(unittest.TestCase):
                 connection.commit()
 
             result = subprocess.run(
-                [sys.executable, "-B", str(PROJECT_DIR / "main.py")],
+                [
+                    sys.executable,
+                    "-B",
+                    str(PROJECT_DIR / "main.py"),
+                    "--db",
+                    str(database_path),
+                ],
                 input="\n".join(answers) + "\n0\n",
                 capture_output=True,
                 text=True,
