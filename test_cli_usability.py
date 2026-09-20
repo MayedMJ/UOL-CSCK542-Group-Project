@@ -255,6 +255,15 @@ class CliUsabilityTests(unittest.TestCase):
                     ],
                 )
 
+    def test_blank_course_code_is_rejected(self) -> None:
+        """Reject empty or whitespace-only course codes before querying."""
+        for course_code in ("", " \t "):
+            with self.subTest(course_code=course_code):
+                output = self._run_application(["1", "1", course_code])
+
+                self.assertIn("Course code cannot be blank.", output)
+                self.assertNotIn("\nResults:\n", output)
+
     def test_empty_report_is_explained(self) -> None:
         """Explain a successful lookup with no matching student."""
         output = self._run_application(["4", "999"])

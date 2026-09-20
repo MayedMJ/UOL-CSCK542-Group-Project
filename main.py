@@ -37,6 +37,9 @@ def main(db_path=DEFAULT_DB_PATH) -> None:
                 params["course_id"] = input(
                     "Enter course code (e.g., CS301): "
                 ).strip()
+                if not params["course_id"]:
+                    print("Course code cannot be blank.")
+                    continue
 
             elif choice == "2":
                 pass  # no extra inputs
